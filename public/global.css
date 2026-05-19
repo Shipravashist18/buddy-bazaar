@@ -1,0 +1,18 @@
+/* * {
+  margin: 0px;
+  padding: 0px;
+  box-sizing: border-box;
+}
+
+.alignItemCenter {
+  justify-content: space-between;
+  align-items: center;
+}
+
+.alignItemSpaceBetween {
+  justify-content: space-between;
+  align-items: center;
+} */
+body{
+  font: 'Poppins',sans-serif;
+}
