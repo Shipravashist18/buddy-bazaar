@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import {useHistory} from "react-router-dom";
-import { Firebase } from "../../firebase/config";
+import axios from "axios";
 import Logo from "../../BuddyBazaar.jpg";
 import RoundLoading from "../Loading/RoundLoading";
 import "./Login.css";
@@ -11,16 +11,52 @@ function Login() {
   let [password, setPassword] = useState("");
   let [loading,setLoading]=useState(false)
   const history = useHistory()
-  const handleSubmit = (e) => {
-    setLoading(true)
-    e.preventDefault();
-    Firebase.auth().signInWithEmailAndPassword(email,password).then(()=>{
-      history.push("/")
-    }).catch((error)=>{
-      alert(error.message)
-    })
+ const handleSubmit = async (e) => {
 
-  };
+  e.preventDefault();
+
+  setLoading(true);
+
+  try {
+
+    const response = await axios.post(
+
+      "http://localhost:5000/api/auth/login",
+
+      {
+        email,
+        password
+      }
+
+    );
+
+    // save token
+
+    localStorage.setItem("token", response.data.token);
+
+    // save user
+
+    localStorage.setItem(
+
+      "user",
+
+      JSON.stringify(response.data.user)
+
+    );
+
+    alert("Login successful");
+
+    history.push("/");
+
+  } catch (error) {
+
+    alert(error.response.data.message);
+
+  }
+
+  setLoading(false);
+
+};
   return (<>
     {loading && <RoundLoading/> }
     <div>

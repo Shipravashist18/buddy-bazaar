@@ -9,10 +9,9 @@ import Arrow from "../../assets/Arrow";
 import SellButton from "../../assets/SellButton";
 import SellButtonPlus from "../../assets/SellButtonPlus";
 import { Link } from "react-router-dom";
-import { AuthContext } from "../../contextStore/AuthContext";
-import { Firebase } from "../../firebase/config";
 import Search from "../Search/Search";
 function Header() {
+  const user=JSON.parse(localStorage.getItem("user"));
   const{allPost}=useContext(AllPostContext)
   const{setPostContent}=useContext(PostContext)
   const history = useHistory();
@@ -43,15 +42,16 @@ function Header() {
   const handleEmptyClick=()=>{
      alert("No items found.., please search by product name");
   }
-  const { user } = useContext(AuthContext);
   
   const logoutHandler = () => {
-    Firebase.auth()
-      .signOut()
-      .then(() => {
-        history.push("/login");
-      });
-  };
+
+  localStorage.removeItem("token");
+
+  localStorage.removeItem("user");
+
+  history.push("/login");
+
+};
   return (
     <div className="headerParentDiv">
       <div className="headerChildDiv">
@@ -90,15 +90,22 @@ function Header() {
           <Arrow></Arrow>
         </div>
         <div className="loginPage">
-          {user ? (
-            user.displayName
-          ) : (
-            <Link to="/login">
-              <span>Login</span>
-            </Link>
-          )}
-          <hr />
-        </div>
+
+  {user ? (
+
+    <span>{user.name}</span>
+
+  ) : (
+
+    <Link to="/login">
+      <span>Login</span>
+    </Link>
+
+  )}
+
+  <hr />
+
+</div>
         {user && (
           <span onClick={logoutHandler} className="logout-span">
             Logout

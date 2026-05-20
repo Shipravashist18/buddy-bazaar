@@ -2,9 +2,9 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import Logo from "../../BuddyBazaar.jpg";
 import "./Signup.css";
-import { Firebase } from "../../firebase/config";
 import { useHistory } from "react-router";
 import SignUpLoading from "../Loading/SignUpLoading";
+import axios from "axios";
 
 export default function Signup() {
   const history = useHistory();
@@ -13,24 +13,40 @@ export default function Signup() {
   let [phone, setPhone] = useState("");
   let [password, setPassword] = useState("");
   let [loading,setLoading]=useState(false)
-  const handleSubmit = (e) => {
-    setLoading(true)
-    e.preventDefault();
-    Firebase.auth()
-      .createUserWithEmailAndPassword(email, password)
-      .then((result) => {
-        result.user.updateProfile({ displayName: name }).then(() => {
-          Firebase.firestore().collection("users").doc(result.user.uid).set({
-            id: result.user.uid,
-            name: name,
-            phone: phone,
-          });
-        });
-      })
-      .then(() => {
-        history.push("/login");
-      });
-  };
+  const handleSubmit = async (e) => {
+
+  e.preventDefault();
+
+  setLoading(true);
+
+  try {
+
+    const response = await axios.post(
+
+      "http://localhost:5000/api/auth/signup",
+
+      {
+        name,
+        email,
+        phone,
+        password
+      }
+
+    );
+
+    alert(response.data.message);
+
+    history.push("/login");
+
+  } catch (error) {
+
+    alert(error.response.data.message);
+
+  }
+
+  setLoading(false);
+
+};
   return (<>
     {loading && <SignUpLoading/> } <div>
       <div className="signupParentDiv">
